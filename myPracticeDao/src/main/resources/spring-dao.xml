@@ -13,7 +13,7 @@
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://129.204.208.169:3306/oa_test?useUnicode=true&amp;characterEncoding=utf-8"/>
         <property name="username" value="pang"/>
-        <property name="password" value="bxh123456"/>
+        <property name="password" value="xxxxx"/>
     </bean>
 
     <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
