@@ -27,13 +27,13 @@ public class Content {
         return list;
     }
 
-    public static final String CLAIMVOUCHER_CREATED = "新创建";
-    public static final String CLAIMVOUCHER_SUBMIT = "已提交";
-    public static final String CLAIMVOUCHER_APPROVED = "已审核";
-    public static final String CLAIMVOUCHER_BACK = "已打回";
-    public static final String CLAIMVOUCHER_TERMINATED = "已终止";
-    public static final String CLAIMVOUCHER_RECHECK = "待复审";
-    public static final String CLAIMVOUCHER_PAID = "已打款";
+    public static final String CLAIM_VOUCHER_CREATED = "新创建";
+    public static final String CLAIM_VOUCHER_SUBMIT = "已提交";
+    public static final String CLAIM_VOUCHER_APPROVED = "已审核";
+    public static final String CLAIM_VOUCHER_BACK = "已打回";
+    public static final String CLAIM_VOUCHER_TERMINATED = "已终止";
+    public static final String CLAIM_VOUCHER_RECHECK = "待复审";
+    public static final String CLAIM_VOUCHER_PAID = "已打款";
 
     public static final double LIMIT_CHECK = 5000.00;
 
