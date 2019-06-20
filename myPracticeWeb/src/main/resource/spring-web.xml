@@ -23,4 +23,11 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.pang.myPractice.global.LoginInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    
 </beans>
