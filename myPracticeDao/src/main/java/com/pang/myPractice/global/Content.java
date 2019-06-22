@@ -18,7 +18,7 @@ public class Content {
         return list;
     }
 
-    public List<String> getItems() {
+    public static List<String> getItems() {
         List<String> list = new ArrayList<String>();
         list.add("交通");
         list.add("餐饮");

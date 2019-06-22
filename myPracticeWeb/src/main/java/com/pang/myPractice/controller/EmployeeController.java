@@ -2,7 +2,6 @@ package com.pang.myPractice.controller;
 
 import com.pang.myPractice.biz.DepartmentBiz;
 import com.pang.myPractice.biz.EmployeeBiz;
-import com.pang.myPractice.entity.Department;
 import com.pang.myPractice.entity.Employee;
 import com.pang.myPractice.global.Content;
 import org.springframework.beans.factory.annotation.Autowired;

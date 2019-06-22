@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pang.myPractice.dao.ClaimVoucherDao">
+
+    <resultMap id="claimVoucher" type="ClaimVoucher">
+        <id property="id" column="id" javaType="int"/>
+        <result property="cause" column="cause" javaType="String"/>
+        <result property="createSn" column="create_sn" javaType="String"/>
+        <result property="createTime" column="create_time" javaType="java.util.Date"/>
+        <result property="nextDealSn" column="next_deal_sn" javaType="String"/>
+        <result property="totalAmount" column="total_amount" javaType="Double"/>
+        <result property="status" column="status" javaType="String"/>
+        <association property="creater" column="create_sn" javaType="Employee">
+            <result property="name" column="cname" javaType="String"/>
+            <result property="post" column="cpost" javaType="String"/>
+        </association>
+        <association property="dealer" column="next_deal_sn" javaType="Employee">
+            <result property="name" column="dname" javaType="String"/>
+            <result property="post" column="dpost" javaType="String"/>
+        </association>
+    </resultMap>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="ClaimVoucher">
+        INSERT INTO claim_voucher (cause, create_sn, create_time, next_deal_sn, total_amount, status)
+        VALUES (#{cause}, #{createSn}, #{createTime}, #{nextDealSn}, #{totalAmount}, #{status});
+    </insert>
+
+    <update id="update" parameterType="ClaimVoucher">
+        UPDATE claim_voucher
+        SET cause        = #{cause}
+          , create_sn    = #{createSn}
+          , create_time  = #{createTime}
+          , next_deal_sn = #{nextDealSn}
+          , total_amount = #{totalAmount}
+          , status       = #{status}
+        WHERE id = #{id};
+    </update>
+
+    <delete id="delete" parameterType="String">
+        DELETE
+        FROM claim_voucher
+        WHERE id = #{id};
+    </delete>
+
+    <select id="select" parameterType="Integer" resultMap="claimVoucher">
+        SELECT cv.id,
+               cv.cause,
+               cv.create_sn,
+               cv.create_time,
+               cv.next_deal_sn,
+               cv.total_amount,
+               cv.status,
+               ce.name cname,
+               ce.post cpost,
+               d.name  dname,
+               d.post  dpost
+        FROM claim_voucher cv
+                 LEFT JOIN employee ce
+                           ON ce.sn = cv.create_sn
+                 LEFT JOIN employee d
+                           ON d.sn = cv.next_deal_sn
+        WHERE cv.id = #{id};
+    </select>
+
+    <select id="selectByCreateSn" parameterType="String" resultMap="claimVoucher">
+        SELECT cv.id,
+               cv.cause,
+               cv.create_sn,
+               cv.create_time,
+               cv.next_deal_sn,
+               cv.total_amount,
+               cv.status,
+               ce.name cname,
+               ce.post cpost,
+               d.name  dname,
+               d.post  dpost
+        FROM claim_voucher cv
+                 LEFT JOIN employee ce
+                           ON ce.sn = cv.create_sn
+                 LEFT JOIN employee d
+                           ON d.sn = cv.next_deal_sn
+        WHERE cv.create_sn = #{csn}
+        ORDER BY cv.create_time DESC;
+    </select>
+
+    <select id="selectByNextDealSn" parameterType="String" resultMap="claimVoucher">
+        SELECT cv.id,
+               cv.cause,
+               cv.create_sn,
+               cv.create_time,
+               cv.next_deal_sn,
+               cv.total_amount,
+               cv.status,
+               ce.name cname,
+               ce.post cpost,
+               d.name  dname,
+               d.post  dpost
+        FROM claim_voucher cv
+                 LEFT JOIN employee ce
+                           ON ce.sn = cv.create_sn
+                 LEFT JOIN employee d
+                           ON d.sn = cv.next_deal_sn
+        WHERE cv.next_deal_sn = #{ndsn}
+        ORDER BY cv.create_time DESC;
+    </select>
+</mapper>

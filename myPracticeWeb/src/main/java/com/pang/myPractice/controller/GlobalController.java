@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 
-@Controller
+@Controller("globalController")
 public class GlobalController {
 
     private GlobalBiz globalBiz;
