@@ -38,7 +38,7 @@ public class ClaimVoucherBizImpl implements ClaimVoucherBiz {
 
         claimVoucherDao.insert(claimVoucher);
 
-        for(ClaimVoucherItem item: items){
+        for (ClaimVoucherItem item : items) {
             item.setClaimVoucherId(claimVoucher.getId());
             claimVoucherItemDao.insert(item);
         }
@@ -57,5 +57,46 @@ public class ClaimVoucherBizImpl implements ClaimVoucherBiz {
     @Override
     public List<DealRecord> getRecords(int cvid) {
         return dealRecordDao.selectByClaimVoucher(cvid);
+    }
+
+    @Override
+    public List<ClaimVoucher> getForSelf(String sn) {
+        return claimVoucherDao.selectByCreateSn(sn);
+    }
+
+    @Override
+    public List<ClaimVoucher> getForDeal(String sn) {
+        return claimVoucherDao.selectByNextDealSn(sn);
+    }
+
+    @Override
+    public void update(ClaimVoucher claimVoucher, List<ClaimVoucherItem> items) {
+        claimVoucher.setNextDealSn(claimVoucher.getCreateSn());
+        claimVoucher.setStatus(Content.CLAIM_VOUCHER_CREATED);
+
+        claimVoucherDao.update(claimVoucher);
+
+        List<ClaimVoucherItem> olds = claimVoucherItemDao.selectByClaimVoucher(claimVoucher.getId());
+        for (ClaimVoucherItem old : olds) {
+            boolean isHave = false;
+            for (ClaimVoucherItem item : items) {
+                if (item.getId() == old.getId()) {
+                    isHave = true;
+                    break;
+                }
+            }
+            if (!isHave) {
+                claimVoucherItemDao.delete(old.getId());
+            }
+        }
+
+        for (ClaimVoucherItem item : items) {
+            item.setClaimVoucherId(claimVoucher.getId());
+            if (item.getId() != null && item.getId() > 0) {
+                claimVoucherItemDao.update(item);
+            } else {
+                claimVoucherItemDao.insert(item);
+            }
+        }
     }
 }

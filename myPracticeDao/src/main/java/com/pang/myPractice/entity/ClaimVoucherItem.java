@@ -4,7 +4,7 @@ public class ClaimVoucherItem {
     private Integer id;
     private Integer claimVoucherId;
     private String item;
-    private String amount;
+    private Double amount;
     private String comment;
 
     public Integer getClaimVoucherId() {
@@ -23,11 +23,11 @@ public class ClaimVoucherItem {
         this.item = item;
     }
 
-    public String getAmount() {
+    public Double getAmount() {
         return amount;
     }
 
-    public void setAmount(String amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
 

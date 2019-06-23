@@ -1,25 +1,28 @@
 package com.pang.myPractice.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class ClaimVoucher {
     private Integer id;
     private String cause;
     private String createSn;
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date createTime;
     private String nextDealSn;
     private Double totalAmount;
     private String status;
 
-    private Employee create;
+    private Employee creater;
     private Employee dealer;
 
-    public Employee getCreate() {
-        return create;
+    public Employee getCreater() {
+        return creater;
     }
 
-    public void setCreate(Employee create) {
-        this.create = create;
+    public void setCreater(Employee creater) {
+        this.creater = creater;
     }
 
     public Employee getDealer() {

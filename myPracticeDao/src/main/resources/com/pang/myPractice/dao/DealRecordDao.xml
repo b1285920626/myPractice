@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.4//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.pang.myPractice.dao.DepartmentDao">
+<mapper namespace="com.pang.myPractice.dao.DealRecordDao">
 
     <resultMap id="dealRecord" type="DealRecord">
         <id property="id" column="id" javaType="Integer"/>
@@ -23,7 +23,7 @@
         VALUES (#{claimVoucherId}, #{dealSn}, #{dealTime}, #{dealWay}, #{dealResult}, #{comment});
     </insert>
 
-    <select id="selectByClaimVoucher" parameterType="String" resultMap="dealRecord">
+    <select id="selectByClaimVoucher" parameterType="Integer" resultMap="dealRecord">
         SELECT d.id,
                d.claim_voucher_id,
                d.deal_sn,

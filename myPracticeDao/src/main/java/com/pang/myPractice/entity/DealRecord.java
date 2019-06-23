@@ -1,11 +1,14 @@
 package com.pang.myPractice.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class DealRecord {
     private Integer id;
     private Integer claimVoucherId;
     private String dealSn;
+    @DateTimeFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date dealTime;
     private String dealWay;
     private String dealResult;
