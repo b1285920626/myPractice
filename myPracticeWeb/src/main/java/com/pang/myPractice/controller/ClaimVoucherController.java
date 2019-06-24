@@ -3,6 +3,7 @@ package com.pang.myPractice.controller;
 import com.pang.myPractice.biz.ClaimVoucherBiz;
 import com.pang.myPractice.dto.ClaimVoucherInfo;
 import com.pang.myPractice.entity.ClaimVoucher;
+import com.pang.myPractice.entity.DealRecord;
 import com.pang.myPractice.entity.Employee;
 import com.pang.myPractice.global.Content;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,35 @@ public class ClaimVoucherController {
         Employee employee = (Employee) session.getAttribute("employee");
         info.getClaimVoucher().setCreateSn(employee.getSn());
         claimVoucherBiz.update(info.getClaimVoucher(), info.getItems());
+
+        return "redirect:deal";
+    }
+
+    @RequestMapping("/submit")
+    public String submit(int id) {
+        claimVoucherBiz.submit(id);
+        return "redirect:deal";
+    }
+
+    @RequestMapping("/to_check")
+    public String toCheck(int id, Map<String, Object> map) {
+        map.put("claimVoucher", claimVoucherBiz.get(id));
+        map.put("items", claimVoucherBiz.getItems(id));
+        map.put("records", claimVoucherBiz.getRecords(id));
+
+        DealRecord dealRecord = new DealRecord();
+        dealRecord.setClaimVoucherId(id);
+        map.put("record",dealRecord);
+
+        return "claim_voucher_check";
+    }
+
+    @RequestMapping("/check")
+    public String check(HttpSession session, DealRecord record) {
+        Employee employee = (Employee) session.getAttribute("employee");
+        record.setDealSn(employee.getSn());
+
+        claimVoucherBiz.deal(record);
 
         return "redirect:deal";
     }

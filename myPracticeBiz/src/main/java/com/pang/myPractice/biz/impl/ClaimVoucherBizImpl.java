@@ -4,9 +4,11 @@ import com.pang.myPractice.biz.ClaimVoucherBiz;
 import com.pang.myPractice.dao.ClaimVoucherDao;
 import com.pang.myPractice.dao.ClaimVoucherItemDao;
 import com.pang.myPractice.dao.DealRecordDao;
+import com.pang.myPractice.dao.EmployeeDao;
 import com.pang.myPractice.entity.ClaimVoucher;
 import com.pang.myPractice.entity.ClaimVoucherItem;
 import com.pang.myPractice.entity.DealRecord;
+import com.pang.myPractice.entity.Employee;
 import com.pang.myPractice.global.Content;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +31,10 @@ public class ClaimVoucherBizImpl implements ClaimVoucherBiz {
     @Autowired
     @Qualifier("dealRecordDao")
     private DealRecordDao dealRecordDao;
+
+    @Autowired
+    @Qualifier("employeeDao")
+    private EmployeeDao employeeDao;
 
     @Override
     public void save(ClaimVoucher claimVoucher, List<ClaimVoucherItem> items) {
@@ -98,5 +104,68 @@ public class ClaimVoucherBizImpl implements ClaimVoucherBiz {
                 claimVoucherItemDao.insert(item);
             }
         }
+    }
+
+    @Override
+    public void submit(int id) {
+        ClaimVoucher claimVoucher = claimVoucherDao.select(id);
+        Employee employee = employeeDao.select(claimVoucher.getCreateSn());
+
+        claimVoucher.setStatus(Content.CLAIM_VOUCHER_SUBMIT);
+        claimVoucher.setNextDealSn(employeeDao.selectByDepartmentAndPost(employee.getDepartmentSn(), Content.POST_FM).get(0).getSn());
+
+        claimVoucherDao.update(claimVoucher);
+
+        DealRecord dealRecord = new DealRecord();
+        dealRecord.setDealWay(Content.DEAL_SUBMIT);
+        dealRecord.setDealSn(employee.getSn());
+        dealRecord.setClaimVoucherId(id);
+        dealRecord.setDealResult(Content.CLAIM_VOUCHER_SUBMIT);
+        dealRecord.setDealTime(new Date());
+        dealRecord.setComment("无");
+        dealRecordDao.insert(dealRecord);
+    }
+
+    @Override
+    public void deal(DealRecord dealRecord) {
+        ClaimVoucher claimVoucher = claimVoucherDao.select(dealRecord.getClaimVoucherId());
+        Employee employee = employeeDao.select(dealRecord.getDealSn());
+
+        if (dealRecord.getDealWay().equals(Content.DEAL_PASS)) {
+            if (claimVoucher.getTotalAmount() <= Content.LIMIT_CHECK || employee.getPost().equals(Content.POST_GM)) {
+                claimVoucher.setStatus(Content.CLAIM_VOUCHER_APPROVED);
+                claimVoucher.setNextDealSn(employeeDao.selectByDepartmentAndPost(null, Content.POST_CASHIER).get(0).getSn());
+
+                dealRecord.setDealTime(new Date());
+                dealRecord.setDealResult(Content.CLAIM_VOUCHER_APPROVED);
+            } else {
+                claimVoucher.setStatus(Content.CLAIM_VOUCHER_RECHECK);
+                claimVoucher.setNextDealSn(employeeDao.selectByDepartmentAndPost(null, Content.POST_GM).get(0).getSn());
+
+                dealRecord.setDealTime(new Date());
+                dealRecord.setDealResult(Content.CLAIM_VOUCHER_RECHECK);
+            }
+        } else if (dealRecord.getDealWay().equals(Content.DEAL_BACK)) {
+            claimVoucher.setStatus(Content.CLAIM_VOUCHER_BACK);
+            claimVoucher.setNextDealSn(claimVoucher.getCreateSn());
+
+            dealRecord.setDealTime(new Date());
+            dealRecord.setDealResult(Content.DEAL_REJECT);
+        } else if (dealRecord.getDealWay().equals(Content.CLAIM_VOUCHER_BACK)) {
+            claimVoucher.setStatus(Content.CLAIM_VOUCHER_TERMINATED);
+            claimVoucher.setNextDealSn(null);
+
+            dealRecord.setDealTime(new Date());
+            dealRecord.setDealResult(Content.CLAIM_VOUCHER_TERMINATED);
+        } else if (dealRecord.getDealWay().equals(Content.DEAL_PAID)) {
+            claimVoucher.setStatus(Content.DEAL_PAID);
+            claimVoucher.setNextDealSn(null);
+
+            dealRecord.setDealTime(new Date());
+            dealRecord.setDealResult(Content.DEAL_PAID);
+        }
+
+        claimVoucherDao.update(claimVoucher);
+        dealRecordDao.insert(dealRecord);
     }
 }

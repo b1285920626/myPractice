@@ -83,13 +83,13 @@
                                 <td>
                                     <C:if test="${cv.status == Content.CLAIM_VOUCHER_CREATED || cv.status == Content.CLAIM_VOUCHER_BACK}">
                                         <a href="/claim_voucher/to_update?id=${cv.id}">修改</a>
-                                        <a href="/claim_voucher/detail?id=${cv.id}">提交</a>
+                                        <a href="/claim_voucher/submit?id=${cv.id}">提交</a>
                                     </C:if>
                                     <C:if test="${cv.status == Content.CLAIM_VOUCHER_SUBMIT || cv.status == Content.CLAIM_VOUCHER_RECHECK}">
-                                        <a href="/claim_voucher/detail?id=${cv.id}">审核</a>
+                                        <a href="/claim_voucher/to_check?id=${cv.id}">审核</a>
                                     </C:if>
                                     <C:if test="${cv.status == Content.CLAIM_VOUCHER_APPROVED}">
-                                        <a href="/claim_voucher/detail?id=${cv.id}">打款</a>
+                                        <a href="/claim_voucher/to_check?id=${cv.id}">打款</a>
                                     </C:if>
                                     <a href="/claim_voucher/detail?id=${cv.id}">详细信息</a>
                                 </td>

@@ -65,4 +65,25 @@
                  LEFT JOIN department d
                            ON e.department_sn = d.sn
     </select>
+
+    <select id="selectByDepartmentAndPost" resultMap="employee">
+        SELECT e.sn,
+        e.password,
+        e.name,
+        e.department_sn,
+        e.post,
+        d.sn d_sn,
+        d.name d_name,
+        d.address d_address
+        FROM employee e
+        LEFT JOIN department d
+        ON e.department_sn = d.sn
+        WHERE e.sn IS NOT NULL
+        <if test="dsn!=null">
+            AND e.department_sn = #{dsn}
+        </if>
+        <if test="post!=null">
+            AND e.post = #{post}
+        </if>
+    </select>
 </mapper>
